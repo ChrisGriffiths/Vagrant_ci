@@ -7,8 +7,10 @@ Gem::Specification.new do |s|
   s.email   = ["Christopher_Griffiths@hotmail.com"]
   s.homepage= "https://github.com/ChrisGriffiths/vagrant_ci.git"
   s.summary = "Using to create and manage vagrant virtual machines"
-	
+
   s.files = Dir.glob("lib/**/*")
-  
+
   s.require_paths = ["lib"]
+
+  s.add_dependency('vagrant_commands', '~> 0.0.9')
 end
