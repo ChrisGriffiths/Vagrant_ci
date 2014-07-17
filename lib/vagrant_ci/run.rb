@@ -6,17 +6,19 @@ module Vagrant_ci
         VIRTUALBOX="virtualbox"
     end
 
-    def self.config_vagrant(name, provider, version, vm_image_location, vagrant_file_path)
-        box = Boxes::VagrantBox.new(name, provider, version, location)
+    def self.config_vagrant(build_name, name, provider, version, vm_image_location, vagrant_file_path)
+        box = Boxes::VagrantBox.new(name, provider, version, vm_image_location)
         Boxes::install_box_if_missing(box)
 
-        check_or_generate_vagrantfile(name, vagrant_file_path)
-        insert_build_config_into_vagrantfile(name, vagrant_file_path)
+        check_or_generate_vagrantfile(build_name, name, vagrant_file_path)
+        insert_build_config_into_vagrantfile(build_name, name, vagrant_file_path)
     end
 
     def self.run(build_name, task_list)
         begin
             heartbeat = Vagrant_ci::Jenkins::heartbeat
+
+
 
             puts "Creating Vagrantbox for Process ID: #{Process.pid}"
 
@@ -35,16 +37,16 @@ module Vagrant_ci
     def self.check_or_generate_vagrantfile(build_name, vagrant_file_path)
         unless File.exist?(vagrant_file_path)
             show_gui = ENV['VAGRANT_GUI'] || false
-            vagrant_template = Vagrant::Vagrantfile.new(show_gui,['osx::default'], build_name)
+            vagrant_template = Vagrant_ci::Vagrantfile.new()
             File.open(vagrant_file_path, 'w') {|file| file.puts vagrant_template.render }
         end
     end
 
-    def self.insert_build_config_into_vagrantfile(build_name, vagrant_file_path)
+    def self.insert_build_config_into_vagrantfile(build_name, vm_name, box_url)
         unless File.read(vagrant_file_path).include? "#{build_name}"
             File.open(vagrant_file_path, 'r+') do |f|
                 f.seek(-4,IO::SEEK_END)
-                f.puts Vagrant::Vagrantfile::box_config(build_name)
+                f.puts Vagrant_ci::Vagrantfile::box_config(build_name, vm_name, box_url)
                 f.puts 'end'
             end
         end
