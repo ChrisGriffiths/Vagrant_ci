@@ -7,18 +7,22 @@ module Vagrant_ci
     end
 
     def self.config_vagrant(build_name, name, provider, version, vm_image_location, vagrant_file_path)
-        box = Boxes::VagrantBox.new(name, provider, version, vm_image_location)
-        Boxes::install_box_if_missing(box)
+        begin
+            heartbeat = Vagrant_ci::Jenkins::heartbeat
 
-        check_or_generate_vagrantfile(build_name, name, vagrant_file_path)
-        insert_build_config_into_vagrantfile(build_name, name, vagrant_file_path)
+            box = Boxes::VagrantBox.new(name, provider, version, vm_image_location)
+            Boxes::install_box_if_missing(box)
+
+            check_or_generate_vagrantfile(build_name, name, vagrant_file_path)
+            insert_build_config_into_vagrantfile(build_name, name, vagrant_file_path)
+        ensure
+            heartbeat.terminate
+        end
     end
 
     def self.run(build_name, task_list)
         begin
             heartbeat = Vagrant_ci::Jenkins::heartbeat
-
-
 
             puts "Creating Vagrantbox for Process ID: #{Process.pid}"
 
