@@ -6,15 +6,17 @@ module Vagrant_ci
         VIRTUALBOX="virtualbox"
     end
 
-    def self.config_vagrant(build_name, name, provider, version, vm_image_location, vagrant_file_path)
+    def self.config_vagrant(build_name, provider, version, vm_image_location, vagrant_file_path)
         begin
             heartbeat = Vagrant_ci::Jenkins::heartbeat
+
+            box_name = File.basename(vm_image_location, ".*" )
 
             box = Boxes::VagrantBox.new(name, provider, version, vm_image_location)
             Boxes::install_box_if_missing(box)
 
-            check_or_generate_vagrantfile(build_name, name, vagrant_file_path)
-            insert_build_config_into_vagrantfile(build_name, name, vagrant_file_path)
+            check_or_generate_vagrantfile(build_name, box_name, vagrant_file_path)
+            insert_build_config_into_vagrantfile(build_name, box_name, vagrant_file_path)
         ensure
             heartbeat.terminate
         end
