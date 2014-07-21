@@ -28,14 +28,14 @@ module Vagrant_ci
 
         def initialize(vm_name, box_url, build_name)
             @gui_enabled = false
-            @build_configs = Vagrant_ci::Vagrantfile::box_config(build_name, vm_name, box_url)
+            @build_configs = Vagrant_ci::Vagrantfile::box_config(vm_name, box_url, build_name)
         end
 
         def render
             ERB.new(VAGRANT_TEMPLATE).result(binding)
         end
 
-        def self.box_config(build_name, vm_name, box_url)
+        def self.box_config(vm_name, box_url build_name)
             ERB.new(BOX_ERB).result(binding)
         end
     end
