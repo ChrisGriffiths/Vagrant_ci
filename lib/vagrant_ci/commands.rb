@@ -9,12 +9,13 @@ module Vagrant_ci
            @remoteLocation = remoteLocation
         end
 
-        def create_box(box_name)
+        def create_box
+            p box_name
             Vagrant_ci::Shell::run "vagrant up #{@box_name} --provision"
         end
 
-        def destroy_box(box_name)
-            puts "Destorying: #{box_name}"
+        def destroy_box
+            puts "Destorying: #{@box_name}"
             Vagrant_ci::Shell::run "vagrant destroy -f #{@box_name}"
         end
 

@@ -1,7 +1,6 @@
 module Vagrant_ci
     module Jenkins
             require 'net/http'
-
             def self.heartbeat
                 Thread.new do |t|
                     while true
@@ -22,7 +21,7 @@ module Vagrant_ci
             def self.build_status
                 build_number = ENV['BUILD_NUMBER']
                 job_name = ENV['JOB_NAME']
-                return p "Build Properties Not Configured" if job_name.nil? or build_number.nil?
+                return p "Jenkins Build Status Not Configured" if job_name.nil? or build_number.nil?
 
                 uri = URI.parse("https://api.access:f391db39b71a58d2119edeb6d0ceac36@mns-jenkins.cloudapp.net/job/#{job_name}/#{build_number}/api/json?tree=building")
 
