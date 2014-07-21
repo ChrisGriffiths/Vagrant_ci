@@ -35,7 +35,7 @@ module Vagrant_ci
             ERB.new(VAGRANT_TEMPLATE).result(binding)
         end
 
-        def self.box_config(vm_name, box_url build_name)
+        def self.box_config(vm_name, box_url, build_name)
             ERB.new(BOX_ERB).result(binding)
         end
     end
